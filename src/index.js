@@ -1,4 +1,6 @@
 import { fetchGallery } from './fetchGallery';
+import simpleLightbox from 'simplelightbox';
+import 'simplelightbox/dist/simple-lightbox.min.css';
 
 const refs = {
   form: document.querySelector('.search-form'),
@@ -11,13 +13,16 @@ console.log(refs.gallery);
 refs.form.addEventListener('submit', onSearch);
 
 function onSearch(evt) {
-  evt.preventDefault();
+  evt.preventDefault(); 
   const searchQuery = evt.currentTarget.elements.searchQuery.value.trim();
   console.log(searchQuery);
   fetchGallery(searchQuery)
     .then(res => res.hits)
     .then(createMarkup)
-    .finally(() => refs.form.reset);
+    .finally(() => {
+      refs.form.reset();
+    }
+);
   //.then(res => cosole.log(res));
 }
 
@@ -34,26 +39,29 @@ function createMarkup(images) {
         comments,
         downloads,
       }) => {
-        return `<div class="photo-card">
-  <img src="${webformatURL}" alt="${tags}" loading="lazy" />
+        return `<a class="gallery__item" href="${largeImageURL}">
+        <div class="photo-card">
+  <img class="gallery__image" src="${webformatURL}" alt="${tags}" loading="lazy" />
   <div class="info">
     <p class="info-item">
-      <b>Likes ${likes}</b>
+      <b>Likes </b>${likes}
     </p>
     <p class="info-item">
-      <b>Views ${views}</b>
+      <b>Views </b>${views}
     </p>
     <p class="info-item">
-      <b>Comments ${comments}</b>
+      <b>Comments </b>${comments}
     </p>
     <p class="info-item">
-      <b>Downloads ${downloads}</b>
+      <b>Downloads </b>${downloads}
     </p>
   </div>
-</div>`;
+</div></a>`;
       }
     )
     .join('');
-  console.log(markup);
+  // console.log(markup);
   refs.gallery.insertAdjacentHTML('beforeend', markup);
+  const lightbox = new SimpleLightbox('.gallery a');
 }
+
