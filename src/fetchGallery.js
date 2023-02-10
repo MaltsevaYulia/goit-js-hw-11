@@ -15,28 +15,62 @@ const options = {
     image_type: 'photo',
     orientation: 'horizontal',
     safesearch: true,
-    page:1,
-    per_page: 40,
+    per_page: 200,
   },
 };
 
-async function fetchGallery(q) {
-  try {
-     const response = await axios.get(`${BASE_URL}?q=${q}`, options);
-    console.log("🚀  response", response)
-    
-    if (!response.data.total) {
-      throw new Error(response.status);
-    }
-    return response.data;
-  } catch (error) {
-    Notiflix.Notify.failure(
-      'Sorry, there are no images matching your search query. Please try again.'
-    );
+export default class GalleryAPIServise {
+  constructor() {
+    this.page = 1;
+    this.q = '';
+    this.shownImg = 40;
   }
-  
+  async fetchGallery() {
+    try {
+      const response = await axios.get(
+        `${BASE_URL}?q=${this.q}&page=${this.page}`,
+        options
+      );
+      console.log('🚀  response', response.data);
 
+      if (!response.data.totalHits) {
+        throw new Error(response.status);
+      } else if(response.data.totalHits)
+      this.incrementPage();
+      return response.data;
+    } catch (error) {
+      return error;
+    }
+  }
+  incrementPage() {
+    this.page += 1;
+  }
+
+  resetPage() {
+    this.page = 1;
+  }
+
+  incrementShownImg() {
+    this.shownImg += 40;
+    
+  }
 }
+
+// async function fetchGallery(q) {
+//   try {
+//      const response = await axios.get(`${BASE_URL}?q=${q}`, options);
+//     console.log("🚀  response", response)
+    
+//     if (!response.data.total) {
+//       throw new Error(response.status);
+//     }
+//     return response.data;
+//   } catch (error) {
+//     Notiflix.Notify.failure(
+//       'Sorry, there are no images matching your search query. Please try again.'
+//     );
+//   }
+// }
 
 // fetchGallery('cat');
 
@@ -52,4 +86,4 @@ async function fetchGallery(q) {
 //   });
 // }
 
-export { fetchGallery };
+// export { fetchGallery };

@@ -3,11 +3,22 @@
     --animation-duration: 250ms;
 }
 
+.load-more {
+    margin: 0 auto;
+    margin-top: 50px;
+    display: block;
+}
+
+button.hidden {
+    display: none;
+}
+
 img {
     display: block;
     max-width: 100%;
     height: auto;
 }
+
 
 .gallery {
     display: flex;
