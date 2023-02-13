@@ -10,10 +10,8 @@ const refs = {
   gallery: document.querySelector('.gallery'),
 };
 
-console.log(refs.form);
-console.log(refs.gallery);
-
 const galleryAPIServise = new GalleryAPIServise()
+const lightbox = new SimpleLightbox('.gallery a');
 const loadMoreBtn = new LoadMoreBtn({
   selector: '.load-more',
   isHidden: true,
@@ -29,28 +27,27 @@ function onSearch(evt) {
 
   loadMoreBtn.show();
   galleryAPIServise.resetPage()
+  galleryAPIServise.resetShownImg();
   clearGallery();
   fetchImg();
-  // galleryAPIServise.fetchGallery()
-  //    .then(res => res.hits)
-  //    .then(createMarkup)
-  //    .finally(() => {
-  //      refs.form.reset();
-  //    });
   
-  //.then(res => cosole.log(res));
+ 
 }
 
 function fetchImg() {
   loadMoreBtn.disable();
   return galleryAPIServise
     .fetchGallery()
-    .then(res => res.hits)
+    .then(res => {
+      isContentFinished(res);
+      return res.hits
+    })
     .then(createMarkup)
     .catch(OnError)
     .finally(() => {
       refs.form.reset();
       loadMoreBtn.enable();
+      
     });
 }
 
@@ -90,27 +87,32 @@ function createMarkup(images) {
     .join('');
   // console.log(markup);
   refs.gallery.insertAdjacentHTML('beforeend', markup);
-  const lightbox = new SimpleLightbox('.gallery a');
+  // const lightbox = new SimpleLightbox('.gallery a');
+  lightbox.refresh();
 }
 
 function clearGallery() {
   refs.gallery.innerHTML = '';
 }
 
-function OnError() {
+function OnError(error) {
+  console.log(error);
   Notiflix.Notify.failure(
     'Sorry, there are no images matching your search query. Please try again.'
   );
+  
   loadMoreBtn.hide();
 }
 
-function isContentFinished() {
-  if (galleryAPIServise < res.totalHits) {
-   return
+function isContentFinished(res) {
+  console.log("🚀 ~ isContentFinished ~ res", res)
+  if (galleryAPIServise.page === 2)
+    Notiflix.Notify.success(`Hooray! We found ${res.totalHits} images.`); 
+  if (res.totalHits - galleryAPIServise.shownImg>=0) {
+    return;
   } 
-   Notiflix.Notify.warning(
-     "We're sorry, but you've reached the end of search results."
-   );
+  loadMoreBtn.hide();
+  Notiflix.Notify.warning("We're sorry, but you've reached the end of search results.")
 }
 
 
@@ -118,17 +120,3 @@ function isContentFinished() {
 
 
 
-//Если без класса
-// function onSearch(evt) {
-//   evt.preventDefault(); 
-//   const searchQuery = evt.currentTarget.elements.searchQuery.value.trim();
-//   console.log(searchQuery);
-//   fetchGallery(searchQuery)
-//     .then(res => res.hits)
-//     .then(createMarkup)
-//     .finally(() => {
-//       refs.form.reset();
-//     }
-// );
-//   //.then(res => cosole.log(res));
-// }

@@ -23,7 +23,7 @@ export default class GalleryAPIServise {
   constructor() {
     this.page = 1;
     this.q = '';
-    this.shownImg = 40;
+    this.shownImg = 200;
   }
   async fetchGallery() {
     try {
@@ -32,11 +32,20 @@ export default class GalleryAPIServise {
         options
       );
       console.log('🚀  response', response.data);
+      
 
       if (!response.data.totalHits) {
         throw new Error(response.status);
-      } else if(response.data.totalHits)
+      }
+      // else if (response.data.totalHits - this.shownImg <= 0) {
+      //   Notiflix.Notify.warning(
+      //     "We're sorry, but you've reached the end of search results."
+      //   );
+      //   this.resetShownImg();
+      // }
       this.incrementPage();
+      this.incrementShownImg();
+      console.log(this.shownImg);
       return response.data;
     } catch (error) {
       return error;
@@ -51,8 +60,11 @@ export default class GalleryAPIServise {
   }
 
   incrementShownImg() {
-    this.shownImg += 40;
-    
+    this.shownImg += 200;
+  }
+
+  resetShownImg() {
+    this.shownImg = 0;
   }
 }
 
