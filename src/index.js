@@ -36,16 +36,18 @@ function onSearch(evt) {
 
 function fetchImg() {
   loadMoreBtn.disable();
+  loadMoreBtn.show();
   return galleryAPIServise
     .fetchGallery()
     .then(res => {
-      isContentFinished(res);
+      notification(res);
       return res.hits
     })
     .then(createMarkup)
     .catch(OnError)
     .finally(() => {
       refs.form.reset();
+      
       loadMoreBtn.enable();
       
     });
@@ -104,11 +106,11 @@ function OnError(error) {
   loadMoreBtn.hide();
 }
 
-function isContentFinished(res) {
+function notification(res) {
   console.log("🚀 ~ isContentFinished ~ res", res)
   if (galleryAPIServise.page === 2)
     Notiflix.Notify.success(`Hooray! We found ${res.totalHits} images.`); 
-  if (res.totalHits - galleryAPIServise.shownImg>=0) {
+  if (res.totalHits - galleryAPIServise.shownImg>0) {
     return;
   } 
   loadMoreBtn.hide();
