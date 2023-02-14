@@ -1,4 +1,4 @@
-// import { fetchGallery } from './fetchGallery';
+
 import simpleLightbox from 'simplelightbox';
 import 'simplelightbox/dist/simple-lightbox.min.css';
 import GalleryAPIServise from './fetchGallery'
@@ -11,7 +11,7 @@ const refs = {
 };
 
 const galleryAPIServise = new GalleryAPIServise()
-const lightbox = new SimpleLightbox('.gallery a');
+const lightbox = new simpleLightbox('.gallery a');
 const loadMoreBtn = new LoadMoreBtn({
   selector: '.load-more',
   isHidden: true,
@@ -23,11 +23,10 @@ loadMoreBtn.button.addEventListener('click', fetchImg);
 function onSearch(evt) {
   evt.preventDefault();
   galleryAPIServise.q = evt.currentTarget.elements.searchQuery.value.trim();
-  console.log(galleryAPIServise.q);
+  // console.log(galleryAPIServise.q);
 
   loadMoreBtn.show();
   galleryAPIServise.resetPage()
-  galleryAPIServise.resetShownImg();
   clearGallery();
   fetchImg();
   
@@ -89,7 +88,6 @@ function createMarkup(images) {
     .join('');
   // console.log(markup);
   refs.gallery.insertAdjacentHTML('beforeend', markup);
-  // const lightbox = new SimpleLightbox('.gallery a');
   lightbox.refresh();
 }
 
@@ -108,14 +106,16 @@ function OnError(error) {
 
 function notification(res) {
   console.log("🚀 ~ isContentFinished ~ res", res)
+  console.log('res.hits.length', res.hits.length);
   if (galleryAPIServise.page === 2)
     Notiflix.Notify.success(`Hooray! We found ${res.totalHits} images.`); 
-  if (res.totalHits - galleryAPIServise.shownImg>0) {
-    return;
+  if (res.hits.length < galleryAPIServise.perPage) {
+    loadMoreBtn.hide();
+    Notiflix.Notify.warning(
+      "We're sorry, but you've reached the end of search results."
+    );
   } 
-  loadMoreBtn.hide();
-  Notiflix.Notify.warning("We're sorry, but you've reached the end of search results.")
-}
+  }
 
 
 

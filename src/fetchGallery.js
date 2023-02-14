@@ -2,12 +2,6 @@ import axios from 'axios'
 import Notiflix from 'notiflix';
 const BASE_URL = 'https://pixabay.com/api/';
 const API_KEY = '33441417-95384e2574ef1faadfd151af8';
-// const options = {
-//   key: API_KEY,
-//   image_type: 'photo',
-//   orientation: 'horizontal',
-//   safesearch: true,
-// };
 
 const options = {
   params: {
@@ -15,7 +9,7 @@ const options = {
     image_type: 'photo',
     orientation: 'horizontal',
     safesearch: true,
-    per_page: 200,
+    per_page: 40,
   },
 };
 
@@ -23,7 +17,7 @@ export default class GalleryAPIServise {
   constructor() {
     this.page = 1;
     this.q = '';
-    this.shownImg = 200;
+    this.perPage = options.params.per_page;
   }
   async fetchGallery() {
     try {
@@ -37,15 +31,8 @@ export default class GalleryAPIServise {
       if (!response.data.totalHits) {
         throw new Error(response.status);
       }
-      // else if (response.data.totalHits - this.shownImg <= 0) {
-      //   Notiflix.Notify.warning(
-      //     "We're sorry, but you've reached the end of search results."
-      //   );
-      //   this.resetShownImg();
-      // }
+    
       this.incrementPage();
-      this.incrementShownImg();
-      console.log(this.shownImg);
       return response.data;
     } catch (error) {
       return error;
@@ -59,43 +46,7 @@ export default class GalleryAPIServise {
     this.page = 1;
   }
 
-  incrementShownImg() {
-    this.shownImg += 200;
-  }
 
-  resetShownImg() {
-    this.shownImg = 0;
-  }
 }
 
-// async function fetchGallery(q) {
-//   try {
-//      const response = await axios.get(`${BASE_URL}?q=${q}`, options);
-//     console.log("🚀  response", response)
-    
-//     if (!response.data.total) {
-//       throw new Error(response.status);
-//     }
-//     return response.data;
-//   } catch (error) {
-//     Notiflix.Notify.failure(
-//       'Sorry, there are no images matching your search query. Please try again.'
-//     );
-//   }
-// }
 
-// fetchGallery('cat');
-
-// function fetchGallery(q) {
-//   const { key, image_type, orientation, safesearch } = options;
-//   return fetch(
-//     `${BASE_URL}?key=${key}&q=${q}&image_type=${image_type}&orientation=${orientation}&safesearch=${safesearch}`
-//   ).then(response => {
-//      if (!response.ok) {
-//        throw new Error(response.status);
-//      }
-//      return response.json();
-//   });
-// }
-
-// export { fetchGallery };
