@@ -105,8 +105,8 @@ function OnError(error) {
 }
 
 function notification(res) {
-  console.log("🚀 ~ isContentFinished ~ res", res)
-  console.log('res.hits.length', res.hits.length);
+  // console.log("🚀  ~ res", res)
+  // console.log('res.hits.length', res.hits.length);
   if (galleryAPIServise.page === 2)
     Notiflix.Notify.success(`Hooray! We found ${res.totalHits} images.`); 
   if (res.hits.length < galleryAPIServise.perPage) {
