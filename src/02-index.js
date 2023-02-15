@@ -19,7 +19,7 @@ function onSearch(evt) {
   galleryAPIServise.q = evt.currentTarget.elements.searchQuery.value.trim();
 //   console.log(galleryAPIServise.q);
   galleryAPIServise.resetPage();
-//   galleryAPIServise.resetShownImg();
+
   clearGallery();
   fetchImg();
 }
@@ -100,7 +100,7 @@ function OnError(error) {
 }
 
 function notification(res) {
-    // console.log('🚀 ~ isContentFinished ~ res', res);
+    // console.log('🚀  ~ res', res);
   if (galleryAPIServise.page === 2)
     Notiflix.Notify.success(`Hooray! We found ${res.totalHits} images.`);
    else if (res.hits.length < galleryAPIServise.perPage) {
@@ -109,10 +109,6 @@ function notification(res) {
       "We're sorry, but you've reached the end of search results."
     );
   }
-    // console.log(
-    //   'galleryAPIServise.shownImg',
-    //   res.totalHits - galleryAPIServise.shownImg
-    // );
     
 }
 
