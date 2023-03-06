@@ -20,16 +20,7 @@ img {
 }
 
 
-.gallery {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 12px;
-    align-items: baseline;
-    padding: 0;
-    margin-top: 20px;
-    justify-content: center;
-    /* height: 250px; */
-}
+
 
 .gallery__item{
     height: 100%;
